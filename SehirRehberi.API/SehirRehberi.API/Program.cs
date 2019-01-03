@@ -31,7 +31,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-
+// git hello 2
 namespace SehirRehberi.API
 {
 	public struct SaveAllreturn { public bool OK; public string ERR; public int affected; }

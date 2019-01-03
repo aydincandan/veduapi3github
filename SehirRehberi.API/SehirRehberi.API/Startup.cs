@@ -50,7 +50,7 @@ using Microsoft.IdentityModel.Tokens;
 using SehirRehberi.API.Data;
 using SehirRehberi.API.Helpers;
 using Microsoft.AspNetCore.Http; //app.Run ... Hello World!
-
+// git hello 1
 namespace SehirRehberi.API
 {
     public class Startup
