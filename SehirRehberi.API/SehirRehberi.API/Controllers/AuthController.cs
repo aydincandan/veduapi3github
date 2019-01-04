@@ -43,7 +43,7 @@ namespace SehirRehberi.API.Controllers
             }
             if (await _authRepository.IsKisiEmailExists(userForRegisterDto.Email))
             {
-				ModelState.AddModelError("asdfg", "Email already exists");
+				ModelState.AddModelError("error", "Email already exists");
 			}
 
 			if (!ModelState.IsValid)
@@ -71,6 +71,7 @@ namespace SehirRehberi.API.Controllers
 
 			if (sonuc > 0)
 			{
+				ModelState.AddModelError("error", "user yaratıldı.");
 				var HSC = HttpStatusCode.Created; // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 				return StatusCode((int)HSC, new MyRestResponse(HSC, ModelState, createdUser, "createdUser")
 				{
@@ -79,6 +80,7 @@ namespace SehirRehberi.API.Controllers
 			}
 			else
 			{
+				ModelState.AddModelError("error", "user yaratılamadı!");
 				var HSC = HttpStatusCode.NotModified; // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 				return StatusCode((int)HSC, new MyRestResponse(HSC, ModelState, createdUser, "createdUser")
 				{
