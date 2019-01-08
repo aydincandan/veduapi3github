@@ -69,7 +69,7 @@ namespace SehirRehberi.API
 
             services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
 
-            services.AddDbContext<MyAppDatabaseContext>(x => x.UseSqlServer(Configuration.GetConnectionString("DefaultConnectionVedu")));
+            services.AddDbContext<MyAppDatabaseContext>(x => x.UseSqlServer(Configuration.GetConnectionString("DefaultConnectionAzure")));
 
             services.AddAutoMapper();
 
