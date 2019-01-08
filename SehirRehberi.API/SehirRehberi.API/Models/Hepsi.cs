@@ -6,10 +6,10 @@ using System.Linq;
 using System.Threading.Tasks;
 
 /*
-PS C:\ops\udemy\kurs2\srapi\SehirRehberi.API> dotnet ef migrations add step0
-PS C:\ops\udemy\kurs2\srapi\SehirRehberi.API> dotnet ef migrations remove  (istersek bi öncekini böyle geri alabiliyoruz.)
+PS C:\ops\veduapi3\veduapi3github\SehirRehberi.API\SehirRehberi.API> dotnet ef migrations add step0
+PS C:\ops\veduapi3\veduapi3github\SehirRehberi.API\SehirRehberi.API> dotnet ef migrations remove  (istersek bi öncekini böyle geri alabiliyoruz.)
 
-PS C:\ops\udemy\kurs2\srapi\SehirRehberi.API> dotnet ef database update
+PS C:\ops\veduapi3\veduapi3github\SehirRehberi.API\SehirRehberi.API> dotnet ef database update
 */
 
 namespace SehirRehberi.API.Models
