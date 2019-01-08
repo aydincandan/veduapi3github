@@ -1,0 +1,29 @@
+17.7 MB olan solution folder (dist haric node_modules dahil)
+ng build --prod  den sonra
+3 MB
+compress den sonra
+942 KB a düþtü
+
+
+PS C:\ops\vedu2github> ng build --prod
+
+PS C:\ops> Compress-Archive -Path vedu2githubdist -DestinationPath myAppFiles.zip
+PS C:\ops>
+
+
+
+
+
+
+ftp:
+	ftp://waws-prod-dm1-131.ftp.azurewebsites.windows.net/
+	vedubox\$vedubox
+	AckaaWEx2flJYjwtGzqBNDGmWQAn6QCrbXgXRYkirgbpCfRmsAvtnBpePDa6
+ftp:
+
+azuresqlserver:
+sunucuadý : vedubox.database.windows.net
+dbname : veduDB07
+username: savedubox
+password: Jkourt45327$ss#uuuw
+azuresqlserver:
