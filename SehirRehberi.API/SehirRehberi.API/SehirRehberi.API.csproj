@@ -13,6 +13,7 @@
     <Compile Remove="Controllers\_SablonlarController.cs" />
     <Compile Remove="Dtos\CityForDetailDto.cs" />
     <Compile Remove="Dtos\CityForListDto.cs" />
+    <Compile Remove="Dtos\GetDersDto.cs" />
     <Compile Remove="Dtos\PhotoForCreationDto.cs" />
     <Compile Remove="Dtos\PhotoForReturnDto.cs" />
     <Compile Remove="Dtos\telefonVEadresDTO.cs" />

@@ -11,11 +11,11 @@ namespace SehirRehberi.API.Data
     {
         public MyAppDatabaseContext(DbContextOptions<MyAppDatabaseContext> options) : base(options)
         {
+			// http://www.gencayyildiz.com/blog/asp-net-core-the-instance-of-entity-type-x-cannot-be-tracked-because-another-instance-of-this-type-with-the-same-key-is-already-being-tracked-hatasi-ve-cozumu/
+		}
 
-        }
-
-        #region yeni
-        public DbSet<Kisiler> Kisiler { get; set; }
+		#region yeni
+		public DbSet<Kisiler> Kisiler { get; set; }
 
         public DbSet<KisiOgretmenler> KisiOgretmenler { get; set; }
         public DbSet<KisiOgrenciler> KisiOgrenciler { get; set; }

@@ -28,8 +28,7 @@ namespace SehirRehberi.API.Data
 			{
 				don.OK = false;
 				var hata1 = e.Message;
-				var hata2 = e.InnerException.Message;
-				don.ERR = hata2;
+				don.ERR = e.InnerException != null ? hata1 + " (=>) " + e.InnerException.Message : hata1;
 			}
 			return don;
 		}
