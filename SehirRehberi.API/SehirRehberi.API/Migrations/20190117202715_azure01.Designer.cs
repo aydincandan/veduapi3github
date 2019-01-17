@@ -10,8 +10,8 @@ using SehirRehberi.API.Data;
 namespace SehirRehberi.API.Migrations
 {
     [DbContext(typeof(MyAppDatabaseContext))]
-    [Migration("20190117134815_ilk00")]
-    partial class ilk00
+    [Migration("20190117202715_azure01")]
+    partial class azure01
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,7 +23,7 @@ namespace SehirRehberi.API.Migrations
 
             modelBuilder.Entity("SehirRehberi.API.Models.DersDetaylar", b =>
                 {
-                    b.Property<int>("DersDetaylarIdE")
+                    b.Property<int>("IdE")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -34,7 +34,7 @@ namespace SehirRehberi.API.Migrations
                     b.Property<string>("TitleAciklama")
                         .HasMaxLength(255);
 
-                    b.HasKey("DersDetaylarIdE");
+                    b.HasKey("IdE");
 
                     b.HasIndex("DerslerIdE");
 
