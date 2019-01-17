@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SehirRehberi.API.Migrations
 {
-    public partial class az01 : Migration
+    public partial class ilk00 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -145,7 +145,7 @@ namespace SehirRehberi.API.Migrations
                 name: "DersDetaylar",
                 columns: table => new
                 {
-                    IdE = table.Column<int>(nullable: false)
+                    DersDetaylarIdE = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     TitleAciklama = table.Column<string>(maxLength: 255, nullable: true),
                     Sirano = table.Column<int>(nullable: true),
@@ -153,7 +153,7 @@ namespace SehirRehberi.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DersDetaylar", x => x.IdE);
+                    table.PrimaryKey("PK_DersDetaylar", x => x.DersDetaylarIdE);
                     table.ForeignKey(
                         name: "FK_DersDetaylar_Dersler_DerslerIdE",
                         column: x => x.DerslerIdE,

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SehirRehberi.API.Data;
 
 namespace SehirRehberi.API.Migrations
 {
     [DbContext(typeof(MyAppDatabaseContext))]
-    partial class MyAppDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20190117142204_ilk01")]
+    partial class ilk01
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,7 +23,7 @@ namespace SehirRehberi.API.Migrations
 
             modelBuilder.Entity("SehirRehberi.API.Models.DersDetaylar", b =>
                 {
-                    b.Property<int>("IdE")
+                    b.Property<int>("DersDetaylaraydi")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -32,7 +34,7 @@ namespace SehirRehberi.API.Migrations
                     b.Property<string>("TitleAciklama")
                         .HasMaxLength(255);
 
-                    b.HasKey("IdE");
+                    b.HasKey("DersDetaylaraydi");
 
                     b.HasIndex("DerslerIdE");
 

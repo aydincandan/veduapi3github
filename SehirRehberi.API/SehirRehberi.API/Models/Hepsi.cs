@@ -11,6 +11,14 @@ PS C:\ops\veduapi3\veduapi3github\SehirRehberi.API\SehirRehberi.API> dotnet ef m
 
 PS C:\ops\veduapi3\veduapi3github\SehirRehberi.API\SehirRehberi.API> dotnet ef database update
 */
+//(xxyyzz) var olan veritabanından model oluşturmak için
+// Package Manager Console dan Scaffold-DbContext "data source=.\\SQLEXPRESS2014; initial catalog=veduDB07; Trusted_Connection=true;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models2
+/* düzelt 
+The EF Core tools version '2.1.1-rtm-30846' is older than that of the runtime '2.1.4-rtm-31024'. Update the tools for the latest features and bug fixes. 
+uyguladım : Install-Package Microsoft.EntityFrameworkCore.Tools -Version 2.1.4   kaynak:https://stackoverflow.com/questions/52702182/how-to-upgrade-ef-core-tools
+tekrar çalıştırdım : (xxyyzz) => sunuç: Instance failure.
+	 */
+// https://docs.microsoft.com/tr-tr/ef/core/managing-schemas/migrations/
 
 namespace SehirRehberi.API.Models
 {
@@ -184,8 +192,8 @@ namespace SehirRehberi.API.Models
     }
     public class DersDetaylar : BaseEntity
     {
-        //public Dersler Dersler { get; set; } // gerek olmayabilir(eğer ki kaldırısak MyAppDBdataContext den)
-        [MaxLength(255)]
+		//public Dersler Dersler { get; set; } // gerek olmayabilir(eğer ki kaldırısak MyAppDBdataContext den)
+		[MaxLength(255)]
         public string TitleAciklama { get; set; }
         public int? Sirano { get; set; }
     }

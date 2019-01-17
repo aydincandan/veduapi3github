@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SehirRehberi.API.Data;
 
 namespace SehirRehberi.API.Migrations
 {
     [DbContext(typeof(MyAppDatabaseContext))]
-    partial class MyAppDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20190117145142_ilk02")]
+    partial class ilk02
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -107,14 +107,14 @@ namespace SehirRehberi.API
             app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials());
             app.UseAuthentication();
 
-            #region dotnet ef migrations add initial yaparken burayı Comment bölgesi yap
-            /* https://www.youtube.com/watch?v=Kn9nH5rTHyk */
-            //using (var scope = app.ApplicationServices.CreateScope())
-            //{
-            //    var context = scope.ServiceProvider.GetService<MyAppDatabaseContext>();
-            //    context.Database.Migrate();
-            //    context.EnsureDatabaseSeeded();
-            //}
+			#region dotnet ef migrations add initial yaparken burayı Comment bölgesi yap
+			/* https://www.youtube.com/watch?v=Kn9nH5rTHyk */
+			using (var scope = app.ApplicationServices.CreateScope())
+			{
+				var context = scope.ServiceProvider.GetService<MyAppDatabaseContext>();
+				context.Database.Migrate();
+				context.EnsureDatabaseSeeded();
+			}
 			/* https://www.youtube.com/watch?v=Kn9nH5rTHyk */
 			#endregion
 
