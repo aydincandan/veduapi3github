@@ -10,14 +10,14 @@ using SehirRehberi.API.Data;
 namespace SehirRehberi.API.Migrations
 {
     [DbContext(typeof(MyAppDatabaseContext))]
-    [Migration("20190117202715_azure01")]
-    partial class azure01
+    [Migration("20190120114035_loc00")]
+    partial class loc00
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.4-rtm-31024")
+                .HasAnnotation("ProductVersion", "2.1.3-rtm-32065")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 

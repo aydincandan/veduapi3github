@@ -69,7 +69,7 @@ namespace SehirRehberi.API
 
             services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
 
-            services.AddDbContext<MyAppDatabaseContext>(x => x.UseSqlServer(Configuration.GetConnectionString("DefaultConnectionAzure")));
+            services.AddDbContext<MyAppDatabaseContext>(x => x.UseSqlServer(Configuration.GetConnectionString("DefaultConnectionLocal")));
 
             services.AddAutoMapper();
 
@@ -109,12 +109,12 @@ namespace SehirRehberi.API
 
 			#region dotnet ef migrations add initial yaparken burayı Comment bölgesi yap
 			/* https://www.youtube.com/watch?v=Kn9nH5rTHyk */
-			using (var scope = app.ApplicationServices.CreateScope())
-			{
-				var context = scope.ServiceProvider.GetService<MyAppDatabaseContext>();
-				context.Database.Migrate();
-				context.EnsureDatabaseSeeded();
-			}
+			//using (var scope = app.ApplicationServices.CreateScope())
+			//{
+			//	var context = scope.ServiceProvider.GetService<MyAppDatabaseContext>();
+			//	context.Database.Migrate();
+			//	context.EnsureDatabaseSeeded();
+			//}
 			/* https://www.youtube.com/watch?v=Kn9nH5rTHyk */
 			#endregion
 

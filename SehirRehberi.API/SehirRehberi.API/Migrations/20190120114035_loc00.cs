@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SehirRehberi.API.Migrations
 {
-    public partial class azure01 : Migration
+    public partial class loc00 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
