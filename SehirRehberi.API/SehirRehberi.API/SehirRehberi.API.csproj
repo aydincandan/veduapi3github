@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Controllers\CenterController.cs" />
     <Compile Remove="Controllers\CitiesController.cs" />
     <Compile Remove="Controllers\DersDetaylarController.cs" />
     <Compile Remove="Controllers\IceriklerController.cs" />

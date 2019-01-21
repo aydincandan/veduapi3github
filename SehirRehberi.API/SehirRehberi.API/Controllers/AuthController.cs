@@ -71,6 +71,10 @@ namespace SehirRehberi.API.Controllers
 
 			if (sonuc > 0)
 			{
+				// evet user(kisi) yaratıldı. fakat KisiTipi ne göre ilişkili 1:1 alanları oluşturmadık. 
+				await this.EmailConfirm(createdUser);
+				// evet şimdi oluşturduk 
+
 				ModelState.AddModelError("error", "user yaratıldı.");
 				var HSC = HttpStatusCode.Created; // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 				return StatusCode((int)HSC, new MyRestResponse(HSC, ModelState, createdUser, "createdUser")
@@ -88,10 +92,12 @@ namespace SehirRehberi.API.Controllers
 				});// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 			}
 		}
+
 		// https://www.restapitutorial.com/httpstatuscodes.html
 		// https://restfulapi.net/http-status-codes/
 		// https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
 		// https://jsonapi.org/
+
 		[HttpPost("KisiLogin")]
         public async Task<ActionResult> KisiLogin([FromBody] KisiLoginDto userForLoginDto)
         {
@@ -151,25 +157,11 @@ namespace SehirRehberi.API.Controllers
 			int sonuc = await _authRepository.UpdateToKisiTaskAsync(user);
 			//
 
-			// aslında EmailConfirm olayında gerçekleşmesi gereken durumu buraya geçici yazıyorum
-			// bir kere çalışması gerekiyor
-			if (user.KisiTipi == "TEA")
-            {
-                if (!await _authRepository.KisiOgretmenlerIsExist(user.IdE))
-                    await _authRepository.AddToKisiOgretmenler(new KisiOgretmenler { OgretmenIdE = user.IdE, UzmanlikAlanlari = "pedagoji, eğitim" });
-            }
-            else if (user.KisiTipi == "STU")
-            {
-                if (!await _authRepository.KisiOgrencilerIsExist(user.IdE))
-                    await _authRepository.AddToKisiOgrenciler(new KisiOgrenciler { OgrenciIdE = user.IdE, IlgiAlanlari = "fizik, matematik, uzay" });
-            }
-            else if (user.KisiTipi == "ADM")
-            {
-                if (!await _authRepository.KisiAdminlerIsExist(user.IdE))
-                    await _authRepository.AddToKisiAdminler(new KisiAdminler { AdminIdE = user.IdE, YetkiSeviye = 1 });
-            }
-			// bir kere çalışması gerekiyor
-			// aslında EmailConfirm olayında gerçekleşmesi gereken durumu buraya geçici yazıyorum
+			//// aslında EmailConfirm olayında gerçekleşmesi gereken durumu buraya geçici yazıyorum
+			//// bir kere çalışması gerekiyor
+			//await this.EmailConfirm(user); // bunu buradan KisiRegister içine aldım
+			//// bir kere çalışması gerekiyor
+			//// aslında EmailConfirm olayında gerçekleşmesi gereken durumu buraya geçici yazıyorum
 
 			return Ok(tokenString); // burası böyle kalacak.
 
@@ -183,6 +175,28 @@ namespace SehirRehberi.API.Controllers
 			//});// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 		}
+
+		[HttpPost("EmailConfirm")]
+		public async Task<ActionResult> EmailConfirm([FromBody] Kisiler user)
+		{
+			if (user.KisiTipi == "TEA")
+			{
+				if (!await _authRepository.KisiOgretmenlerIsExist(user.IdE))
+					await _authRepository.AddToKisiOgretmenler(new KisiOgretmenler { OgretmenIdE = user.IdE, UzmanlikAlanlari = "pedagoji, eğitim" });
+			}
+			else if (user.KisiTipi == "STU")
+			{
+				if (!await _authRepository.KisiOgrencilerIsExist(user.IdE))
+					await _authRepository.AddToKisiOgrenciler(new KisiOgrenciler { OgrenciIdE = user.IdE, IlgiAlanlari = "fizik, matematik, uzay" });
+			}
+			else if (user.KisiTipi == "ADM")
+			{
+				if (!await _authRepository.KisiAdminlerIsExist(user.IdE))
+					await _authRepository.AddToKisiAdminler(new KisiAdminler { AdminIdE = user.IdE, YetkiSeviye = 1 });
+			}
+			return new OkResult();
+		}
+
 		[HttpGet("KisilerList")]
         public IActionResult KisilerList()
         {
