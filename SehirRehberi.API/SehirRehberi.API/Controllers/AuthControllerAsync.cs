@@ -20,14 +20,14 @@ using SehirRehberi.API.Models;
 namespace SehirRehberi.API.Controllers
 {
     [Produces("application/json")]
-    [Route("api/auth")]
-    public class AuthController : Controller
+    [Route("api/authAsync")]
+    public class AuthControllerAsync : Controller
     {
-        private IAuthRepository _authRepository;
+        private IAuthRepositoryAsync _authRepository;
         private IConfiguration _configuration;
         private IMapper _mapper;
 
-        public AuthController(IAuthRepository authRepository, IConfiguration configuration, IMapper mapper)
+        public AuthControllerAsync(IAuthRepositoryAsync authRepository, IConfiguration configuration, IMapper mapper)
         {
             _authRepository = authRepository;
             _configuration = configuration;
@@ -35,25 +35,25 @@ namespace SehirRehberi.API.Controllers
         }
 
 		[HttpGet("KisiRegister/create")]
-		public IActionResult KisiRegisterCreate()
+		public Task<IActionResult> KisiRegisterCreateAsync()
 		{
-			var stu1 = this.KisiRegister(new KisiRegisterDto() { Email = "tea1", KisiTipi = "TEA", Password = "tea1", UserName = "tea1" });
-			var stu2 = this.KisiRegister(new KisiRegisterDto() { Email = "tea2", KisiTipi = "TEA", Password = "tea2", UserName = "tea2" });
-			var stu3 = this.KisiRegister(new KisiRegisterDto() { Email = "tea3", KisiTipi = "TEA", Password = "tea3", UserName = "tea3" });
-			var stu4 = this.KisiRegister(new KisiRegisterDto() { Email = "tea4", KisiTipi = "TEA", Password = "tea4", UserName = "tea4" });
-			var stu5 = this.KisiRegister(new KisiRegisterDto() { Email = "tea5", KisiTipi = "TEA", Password = "tea5", UserName = "tea5" });
-			var stu6 = this.KisiRegister(new KisiRegisterDto() { Email = "tea6", KisiTipi = "TEA", Password = "tea6", UserName = "tea6" });
+			var stu1 = this.KisiRegisterAsync(new KisiRegisterDto() { Email = "stu1", KisiTipi = "STU", Password = "stu1", UserName = "stu1" });
+			var stu2 = this.KisiRegisterAsync(new KisiRegisterDto() { Email = "stu2", KisiTipi = "STU", Password = "stu2", UserName = "stu2" });
+			var stu3 = this.KisiRegisterAsync(new KisiRegisterDto() { Email = "stu3", KisiTipi = "STU", Password = "stu3", UserName = "stu3" });
+			var stu4 = this.KisiRegisterAsync(new KisiRegisterDto() { Email = "stu4", KisiTipi = "STU", Password = "stu4", UserName = "stu4" });
+			var stu5 = this.KisiRegisterAsync(new KisiRegisterDto() { Email = "stu5", KisiTipi = "STU", Password = "stu5", UserName = "stu5" });
+			var stu6 = this.KisiRegisterAsync(new KisiRegisterDto() { Email = "stu6", KisiTipi = "STU", Password = "stu6", UserName = "stu6" });
 			return stu6;
 		}
 
 		[HttpPost("KisiRegister")]
-        public IActionResult KisiRegister([FromBody] KisiRegisterDto userForRegisterDto)
+        public async Task<IActionResult> KisiRegisterAsync([FromBody] KisiRegisterDto userForRegisterDto)
         {
-            if ( _authRepository.IsKisiUsernameExists(userForRegisterDto.UserName))
+            if (await _authRepository.IsKisiUsernameExistsAsync(userForRegisterDto.UserName))
             {
                 ModelState.AddModelError("error", "Username already exists");
             }
-            if ( _authRepository.IsKisiEmailExists(userForRegisterDto.Email))
+            if (await _authRepository.IsKisiEmailExistsAsync(userForRegisterDto.Email))
             {
 				ModelState.AddModelError("error", "Email already exists");
 			}
@@ -74,18 +74,17 @@ namespace SehirRehberi.API.Controllers
                 Username = userForRegisterDto.UserName
             };
 
-			var createdUser = _authRepository.KisiRegister(userToCreate, userForRegisterDto.Password);
+            var createdUser = await _authRepository.KisiRegisterAsync(userToCreate, userForRegisterDto.Password);
 
-				createdUser.RegisterDate = DateTime.Now;
-				createdUser.RegisterDateIP = "1.1.1.1";
-				createdUser.Username = _ControllersHelper.GetUsernameFromEmail(userToCreate.Email) + createdUser.IdE;
-
-			int sonuc =  _authRepository.UpdateToKisi(createdUser);
+																	createdUser.RegisterDate = DateTime.Now;
+																	createdUser.RegisterDateIP = "1.1.1.1";
+																	createdUser.Username = _ControllersHelper.GetUsernameFromEmail(userToCreate.Email) + createdUser.IdE;
+			int sonuc = await _authRepository.UpdateToKisiAsync(createdUser);
 
 			if (sonuc > 0)
 			{
 				// evet user(kisi) yaratıldı. fakat KisiTipi ne göre ilişkili 1:1 alanları oluşturmadık. 
-				 this.EmailConfirm(createdUser);
+				await this.EmailConfirmAsync(createdUser);
 				// evet şimdi oluşturduk 
 
 				ModelState.AddModelError("error", "user yaratıldı.");
@@ -112,19 +111,19 @@ namespace SehirRehberi.API.Controllers
 		// https://jsonapi.org/
 
 		[HttpPost("KisiLogin")]
-        public ActionResult KisiLogin([FromBody] KisiLoginDto userForLoginDto)
+        public async Task<ActionResult> KisiLoginAsync([FromBody] KisiLoginDto userForLoginDto)
         {
             //
 
-            var user =  _authRepository.KisiLogin(userForLoginDto.Email, userForLoginDto.Password);
+            var user = await _authRepository.KisiLoginAsync(userForLoginDto.Email, userForLoginDto.Password);
 
             if (user == null) // emailine göre bulamadıysak
             {
                 // bir de email olarak gelen bilgiyi username olarak aratalım
-                var Kisi =  _authRepository.GetKisilerByUsername(username : userForLoginDto.Email);
+                var Kisi = await _authRepository.GetKisilerByUsernameAsync(username : userForLoginDto.Email);
                 if (Kisi != null)
                 {
-                    user =  _authRepository.KisiLogin(Kisi.Email, userForLoginDto.Password);
+                    user = await _authRepository.KisiLoginAsync(Kisi.Email, userForLoginDto.Password);
                 }
             }
 
@@ -161,18 +160,18 @@ namespace SehirRehberi.API.Controllers
 
             // burada LoginTracker add yap            
             var LT = new LoginTracker() { LoginDateIP = "2.2.2.2", KisiIdE = user.IdE };
-            var track =  _authRepository.AddToLoginTracker(LT);
+            var track = await _authRepository.AddToLoginTrackerAsync(LT);
 			// burada LoginTracker add yap
 
 			//
-			user.IsAnyLogin =  _authRepository.IsAnylogin(user.IdE);
-			user.LastLoginDate =  _authRepository.GetLastlogin(user.IdE);
-			int sonuc =  _authRepository.UpdateToKisi(user);
+			user.IsAnyLogin = await _authRepository.IsAnyloginAsync(user.IdE);
+			user.LastLoginDate = await _authRepository.GetLastloginAsync(user.IdE);
+			int sonuc = await _authRepository.UpdateToKisiAsync(user);
 			//
 
 			//// aslında EmailConfirm olayında gerçekleşmesi gereken durumu buraya geçici yazıyorum
 			//// bir kere çalışması gerekiyor
-			// this.EmailConfirm(user); // bunu buradan KisiRegister içine aldım
+			//await this.EmailConfirm(user); // bunu buradan KisiRegister içine aldım
 			//// bir kere çalışması gerekiyor
 			//// aslında EmailConfirm olayında gerçekleşmesi gereken durumu buraya geçici yazıyorum
 
@@ -190,30 +189,30 @@ namespace SehirRehberi.API.Controllers
 		}
 
 		[HttpPost("EmailConfirm")]
-		public ActionResult EmailConfirm([FromBody] Kisiler user)
+		public async Task<ActionResult> EmailConfirmAsync([FromBody] Kisiler user)
 		{
 			if (user.KisiTipi == "TEA")
 			{
-				if (! _authRepository.KisiOgretmenlerIsExist(user.IdE))
-					 _authRepository.AddToKisiOgretmenler(new KisiOgretmenler { OgretmenIdE = user.IdE, UzmanlikAlanlari = "pedagoji, eğitim" });
+				if (!await _authRepository.KisiOgretmenlerIsExistAsync(user.IdE))
+					await _authRepository.AddToKisiOgretmenlerAsync(new KisiOgretmenler { OgretmenIdE = user.IdE, UzmanlikAlanlari = "pedagoji, eğitim" });
 			}
 			else if (user.KisiTipi == "STU")
 			{
-				if (! _authRepository.KisiOgrencilerIsExist(user.IdE))
-					 _authRepository.AddToKisiOgrenciler(new KisiOgrenciler { OgrenciIdE = user.IdE, IlgiAlanlari = "fizik, matematik, uzay" });
+				if (!await _authRepository.KisiOgrencilerIsExistAsync(user.IdE))
+					await _authRepository.AddToKisiOgrencilerAsync(new KisiOgrenciler { OgrenciIdE = user.IdE, IlgiAlanlari = "fizik, matematik, uzay" });
 			}
 			else if (user.KisiTipi == "ADM")
 			{
-				if (! _authRepository.KisiAdminlerIsExist(user.IdE))
-					 _authRepository.AddToKisiAdminler(new KisiAdminler { AdminIdE = user.IdE, YetkiSeviye = 1 });
+				if (!await _authRepository.KisiAdminlerIsExistAsync(user.IdE))
+					await _authRepository.AddToKisiAdminlerAsync(new KisiAdminler { AdminIdE = user.IdE, YetkiSeviye = 1 });
 			}
 			return new OkResult();
 		}
 
 		[HttpGet("KisilerList")]
-		public IActionResult KisilerList()
+		public async Task<IActionResult> KisilerListAsync()
 		{
-			var gelen = _authRepository.KisilerList();
+			var gelen = await Task.Run(() => _authRepository.KisilerListAsync());
 			return Ok(gelen);
 		}
 
@@ -244,7 +243,7 @@ namespace SehirRehberi.API.Controllers
         {
             // System.Threading.Thread.Sleep(10000);
 
-            var data = _authRepository.KisilerList(); ////////////////////////////////////////
+            var data = _authRepository.KisilerListAsync(); ////////////////////////////////////////
 
             var dataToReturn = _mapper.Map<List<GetKisiDto>>(data);
 
@@ -256,7 +255,7 @@ namespace SehirRehberi.API.Controllers
         public IActionResult Get(int id)
         {
             //System.Threading.Thread.Sleep(10000);
-            var data = _authRepository.GetKisilerById(id); ////////////////////////////////////////
+            var data = _authRepository.GetKisilerByIdAsync(id); ////////////////////////////////////////
 
             var dataToReturn = _mapper.Map<GetKisiDto>(data);
 
@@ -271,7 +270,7 @@ namespace SehirRehberi.API.Controllers
         [Route("Kisiler/update/{id}")]
         public IActionResult Update(int id, [FromBody] Kisiler newdata)
         {
-            var olddata = _authRepository.GetKisilerById(id);
+            var olddata = _authRepository.GetKisilerByIdAsync(id);
 
             if (olddata == null) return Ok(_ControllersHelper.notfound(info: id));
 
@@ -294,7 +293,7 @@ namespace SehirRehberi.API.Controllers
         [Route("Kisiler/delete/{id}")]
         public IActionResult Delete(int id)
         {
-            var data = _authRepository.GetKisilerById(id);
+            var data = _authRepository.GetKisilerByIdAsync(id);
             if (data == null) return Ok(_ControllersHelper.notfound(info: id));
 
             _authRepository.Delete(data); ////////////////////////////////////////
@@ -308,9 +307,9 @@ namespace SehirRehberi.API.Controllers
 
         [HttpDelete]
         [Route("deleteall")]
-        public IActionResult DeleteAll()
+        public async Task<IActionResult> DeleteAll()
         {
-            var datas =  _authRepository.KisilerList();
+            var datas = await _authRepository.KisilerListAsync();
 
             foreach (var data in datas)
                 _authRepository.Delete(data); ////////////////////////////////////////

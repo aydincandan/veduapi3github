@@ -8,7 +8,7 @@ namespace SehirRehberi.API.Data
 {
     public static class MyAppDatabaseContextExtensions
     {
-        /* reset
+		/* reset
          
 use veduDB04
 
@@ -18,7 +18,15 @@ delete TblDersler
 delete TblIcerikler             
              
              */
-        public static void EnsureDatabaseSeeded(this MyAppDatabaseContext context)
+		public static async void OlusturKisiOgrenciOrnekleri(this IAuthRepositoryAsync context)
+		{
+			await context.KisiRegisterAsync(new Kisiler { Username = "stu1", Email = "stu1", KisiTipi = "STU" }, "stu1");
+			await context.KisiRegisterAsync(new Kisiler { Username = "stu2", Email = "stu2", KisiTipi = "STU" }, "stu2");
+			await context.KisiRegisterAsync(new Kisiler { Username = "stu3", Email = "stu3", KisiTipi = "STU" }, "stu3");
+			await context.KisiRegisterAsync(new Kisiler { Username = "stu4", Email = "stu4", KisiTipi = "STU" }, "stu4");
+		}
+
+		public static void EnsureDatabaseSeeded(this MyAppDatabaseContext context)
         {
             /////////////////////////////////////////////////////////////
             //if (!context.Values.Any())

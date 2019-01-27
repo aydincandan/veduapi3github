@@ -11,27 +11,27 @@ namespace SehirRehberi.API.Data
         void Add<T>(T entity) where T : class;
         void Delete<T>(T entity) where T : class;
         void Update<T>(T entity) where T : class;
+
 		SaveAllreturn SaveAll();
 
-		Task<Kisiler> KisiRegister(Kisiler user, string password);
-        Task<Kisiler> KisiLogin(string Email, string password);
-        Task<bool> IsKisiUsernameExists(string userName);
-		Task<bool> IsKisiEmailExists(string Email);
-		Task<bool> IsAnylogin(int id);
-		Task<DateTime> GetLastlogin(int id);
-		List<Kisiler> KisilerList();
-        Kisiler GetKisilerById(int Id);
-        Task<Kisiler> GetKisilerByUsername(string username);
+		Kisiler KisiRegister(Kisiler user, string password);
+        Kisiler KisiLogin(string Email, string password);
+        bool IsKisiUsernameExists(string userName);
+		bool IsKisiEmailExists(string Email);
+		bool IsAnylogin(int id);
+		DateTime GetLastlogin(int id);
+        Kisiler GetKisilerByUsername(string username);
+        LoginTracker AddToLoginTracker(LoginTracker lT);
+		int UpdateToKisi(Kisiler user); // test et olmuştur
+		bool KisiOgretmenlerIsExist(int IdE);
+        bool KisiOgrencilerIsExist(int IdE);
+        bool KisiAdminlerIsExist(int IdE);
+        KisiOgretmenler AddToKisiOgretmenler(KisiOgretmenler user);
+        KisiOgrenciler AddToKisiOgrenciler(KisiOgrenciler user);
+        KisiAdminler AddToKisiAdminler(KisiAdminler user);
 
-        /// ////////////////////////////////////////////////////////////////////////////
-        Task<LoginTracker> AddToLoginTracker(LoginTracker lT);
-		Kisiler UpdateToKisi(Kisiler user); // update async olmuyor galiba
-		Task<int> UpdateToKisiTaskAsync(Kisiler user); // test et olmuştur
-		Task<bool> KisiOgretmenlerIsExist(int IdE);
-        Task<bool> KisiOgrencilerIsExist(int IdE);
-        Task<bool> KisiAdminlerIsExist(int IdE);
-        Task<KisiOgretmenler> AddToKisiOgretmenler(KisiOgretmenler user);
-        Task<KisiOgrenciler> AddToKisiOgrenciler(KisiOgrenciler user);
-        Task<KisiAdminler> AddToKisiAdminler(KisiAdminler user);
-    }
+		List<Kisiler> KisilerList();
+		Kisiler GetKisilerById(int Id);
+
+	}
 }

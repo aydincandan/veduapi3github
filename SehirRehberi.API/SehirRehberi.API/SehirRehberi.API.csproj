@@ -12,6 +12,8 @@
     <Compile Remove="Controllers\PhotosController.cs" />
     <Compile Remove="Controllers\ValuesController.cs" />
     <Compile Remove="Controllers\_SablonlarController.cs" />
+    <Compile Remove="Data\AuthRepository2.cs" />
+    <Compile Remove="Data\IAuthRepository2.cs" />
     <Compile Remove="Dtos\CityForDetailDto.cs" />
     <Compile Remove="Dtos\CityForListDto.cs" />
     <Compile Remove="Dtos\GetDersDto.cs" />

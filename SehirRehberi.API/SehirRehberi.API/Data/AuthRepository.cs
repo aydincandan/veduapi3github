@@ -8,155 +8,167 @@ using SehirRehberi.API.Models;
 
 namespace SehirRehberi.API.Data
 {
-    public class AuthRepository : IAuthRepository
-    {
-        private MyAppDatabaseContext _context;
+	public class AuthRepository : IAuthRepository
+	{
+		private MyAppDatabaseContext _context;
 
-        public AuthRepository(MyAppDatabaseContext context) { _context = context; }
+		public AuthRepository(MyAppDatabaseContext context) { _context = context; }
 
-        public void Add<T>(T entity) where T : class { _context.Add(entity); }
-        public void Delete<T>(T entity) where T : class { _context.Remove(entity); }
-        public void Update<T>(T entity) where T : class { _context.Update(entity); }
+		public void Add<T>(T entity) where T : class { _context.Add(entity); }
+		public void Delete<T>(T entity) where T : class { _context.Remove(entity); }
+		public void Update<T>(T entity) where T : class { _context.Update(entity); }
 		public SaveAllreturn SaveAll()
 		{
-			SaveAllreturn don = new SaveAllreturn();
+			SaveAllreturn donus = new SaveAllreturn();
 			try
 			{
-				don.affected = _context.SaveChanges();
-				don.OK = don.affected > 0;
+				donus.affected = _context.SaveChanges();
+				donus.OK = donus.affected > 0;
 			}
 			catch (Exception e)
 			{
-				don.OK = false;
+				donus.OK = false;
 				var hata1 = e.Message;
-				don.ERR = e.InnerException != null ? hata1 + " (=>) " + e.InnerException.Message : hata1;
+				donus.ERR = e.InnerException != null ? hata1 + " (=>) " + e.InnerException.Message : hata1;
 			}
-			return don;
+			return donus;
 		}
 
 		#region yeni
-		public async Task<Kisiler> KisiRegister(Kisiler user, string password)
-        {
-            byte[] passwordHash, passwordSalt;
-            _ControllersHelper.CreatePasswordHash(password, out passwordHash, out passwordSalt);
+		public Kisiler KisiRegister(Kisiler user, string password)
+		{
+			byte[] passwordHash, passwordSalt;
+			_ControllersHelper.CreatePasswordHash(password, out passwordHash, out passwordSalt);
 
-            user.PasswordHash = passwordHash;
-            user.PasswordSalt = passwordSalt;
+			user.PasswordHash = passwordHash;
+			user.PasswordSalt = passwordSalt;
 
-            await _context.Kisiler.AddAsync(user);
-            await _context.SaveChangesAsync();
+			 _context.Kisiler.Add(user);
+			 _context.SaveChanges();
 
-            return user;
-        }
+			return user;
+		}
 
-        public async Task<Kisiler> KisiLogin(string Email, string password)
-        {
-            var user = await _context.Kisiler.FirstOrDefaultAsync(x => x.Email == Email);
-            if (user == null)
-            {
-                return null;
-            }
+		public Kisiler KisiLogin(string Email, string password)
+		{
+			var user =  _context.Kisiler.FirstOrDefault(x => x.Email == Email);
+			if (user == null)
+			{
+				return null;
+			}
 
-            if (!_ControllersHelper.VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
-            {
-                return null;
-            }
+			if (!_ControllersHelper.VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
+			{
+				return null;
+			}
 
-            return user;
-        }
+			return user;
+		}
 
-        public async Task<bool> IsKisiUsernameExists(string userName) {
-            if (await _context.Kisiler.AnyAsync(x => x.Username == userName && userName != null)) return true;
+		public bool IsKisiUsernameExists(string userName)
+		{
+			if ( _context.Kisiler.Any(x => x.Username == userName && userName != null)) return true;
 			return false;
-        }
-        public async Task<bool> IsKisiEmailExists(string Email) {
-            if (await _context.Kisiler.AnyAsync(x => x.Email == Email)) return true;
+		}
+		public bool IsKisiEmailExists(string Email)
+		{
+			if ( _context.Kisiler.Any(x => x.Email == Email)) return true;
 			return false;
-        }
-		public async Task<bool> IsAnylogin(int id) {
-			if (await _context.LoginTracker.AnyAsync(x => x.KisiIdE == id)) return true;
+		}
+		public bool IsAnylogin(int id)
+		{
+			if ( _context.LoginTracker.Any(x => x.KisiIdE == id)) return true;
 			return false;
 		}
 
-		#region https://www.bayramucuncu.com/asyncawait-ile-asenkron-programlama/
-		public async Task<DateTime> GetLastlogin(int id) {
-			Task<DateTime> sonuc = Task.Run(() => _context.LoginTracker.Where(k => k.KisiIdE == id).OrderByDescending(y => y.LoginDate).FirstOrDefaultAsync().Result.LoginDate); // public Task<DateTime> GetLastloginTaskAsync(int id)
-			return await sonuc;
+		#region https://www.bayramucuncu.com/async-ile-asenkron-programlama/
+		public DateTime GetLastlogin(int id)
+		{
+			DateTime sonuc = _context.LoginTracker.Where(k => k.KisiIdE == id).OrderByDescending(y => y.LoginDate).FirstOrDefault().LoginDate;
+			return  sonuc;
 		}
 		#endregion
 
-		public List<Kisiler> KisilerList()
-        {
-            return _context.Kisiler
-              .Include(c => c.Telefonlari)
-              .Include(c => c.Adresleri)
-              .Include(c => c.Dersleri)
-              .Include(c => c.Icerikleri)
-              .Include(c => c.Takvimleri)
-              .ToList();
-        }
-
-        public Kisiler GetKisilerById(int Id) { return _context.Kisiler.Include(c => c.Telefonlari).Include(c => c.Adresleri).FirstOrDefault(c => c.IdE == Id); }
-        public async Task<Kisiler> GetKisilerByUsername(string username) { return await _context.Kisiler.FirstOrDefaultAsync(c => c.Username == username); }
 
 
-        /// ////////////////////////////////////////////////////////////////////////////
-        public async Task<LoginTracker> AddToLoginTracker(LoginTracker obj)
-        {           
-            await _context.LoginTracker.AddAsync(obj);
-            await _context.SaveChangesAsync();
-            return obj;
-        }
+		public Kisiler GetKisilerByUsername(string username) { return  _context.Kisiler.FirstOrDefault(c => c.Username == username); }
 
-        // async olamadı
-        public Kisiler UpdateToKisi(Kisiler user)
-        {
-            _context.Kisiler.Update(user);
-            _context.SaveChanges();
-            return user;
-        }
-		public async Task<int> UpdateToKisiTaskAsync(Kisiler user)
+
+		/// ////////////////////////////////////////////////////////////////////////////
+		public LoginTracker AddToLoginTracker(LoginTracker obj)
+		{
+			 _context.LoginTracker.Add(obj);
+			 _context.SaveChanges();
+			return obj;
+		}
+
+		public bool KisiOgretmenlerIsExist(int IdE)
+		{
+			if ( _context.KisiOgretmenler.Any(x => x.OgretmenIdE == IdE)) { return true; }
+			return false;
+		}
+		public bool KisiOgrencilerIsExist(int IdE)
+		{
+			if ( _context.KisiOgrenciler.Any(x => x.OgrenciIdE == IdE)) { return true; }
+			return false;
+		}
+		public bool KisiAdminlerIsExist(int IdE)
+		{
+			if ( _context.KisiAdminler.Any(x => x.AdminIdE == IdE)) { return true; }
+			return false;
+		}
+
+		public KisiOgretmenler AddToKisiOgretmenler(KisiOgretmenler user)
+		{
+			 _context.KisiOgretmenler.Add(user);
+			 _context.SaveChanges();
+			return user;
+		}
+		public KisiOgrenciler AddToKisiOgrenciler(KisiOgrenciler user)
+		{
+			 _context.KisiOgrenciler.Add(user);
+			 _context.SaveChanges();
+			return user;
+		}
+		public KisiAdminler AddToKisiAdminler(KisiAdminler user)
+		{
+			 _context.KisiAdminler.Add(user);
+			 _context.SaveChanges();
+			return user;
+		}
+
+		public Kisiler GetKisilerById(int Id)
+		{
+			Kisiler sonuc = (
+				_context.Kisiler
+										.Include(c => c.Telefonlari)
+										.Include(c => c.Adresleri)
+										.FirstOrDefault(c => c.IdE == Id)
+			);
+			return  sonuc;
+		}
+
+		public int UpdateToKisi(Kisiler user)
 		{
 			_context.Kisiler.Update(user);
 
-			Task<int> sonuc = Task.Run(() => _context.SaveChanges());
-			return await sonuc;
+			int sonuc = _context.SaveChanges();
+			return  sonuc;
 		}
 
-		public async Task<bool> KisiOgretmenlerIsExist(int IdE)
-        {
-            if (await _context.KisiOgretmenler.AnyAsync(x => x.OgretmenIdE == IdE)) { return true; }
-            return false;
-        }
-        public async Task<bool> KisiOgrencilerIsExist(int IdE)
-        {
-            if (await _context.KisiOgrenciler.AnyAsync(x => x.OgrenciIdE == IdE)) { return true; }
-            return false;
-        }
-        public async Task<bool> KisiAdminlerIsExist(int IdE)
-        {
-            if (await _context.KisiAdminler.AnyAsync(x => x.AdminIdE == IdE)) { return true; }
-            return false;
-        }
+		public List<Kisiler> KisilerList()
+		{
+			List<Kisiler> sonuc = _context.Kisiler
+				.Include(c => c.Telefonlari)
+				.Include(c => c.Adresleri)
+				.Include(c => c.Dersleri)
+				.Include(c => c.Icerikleri)
+				.Include(c => c.Takvimleri)
+				.ToList();
 
-        public async Task<KisiOgretmenler> AddToKisiOgretmenler(KisiOgretmenler user)
-        {
-            await _context.KisiOgretmenler.AddAsync(user);
-            await _context.SaveChangesAsync();
-            return user;
-        }
-        public async Task<KisiOgrenciler> AddToKisiOgrenciler(KisiOgrenciler user)
-        {
-            await _context.KisiOgrenciler.AddAsync(user);
-            await _context.SaveChangesAsync();
-            return user;
-        }
-        public async Task<KisiAdminler> AddToKisiAdminler(KisiAdminler user)
-        {
-            await _context.KisiAdminler.AddAsync(user);
-            await _context.SaveChangesAsync();
-            return user;
-        }
+			return  sonuc;
+		}
+
 		#endregion
 	}
 }

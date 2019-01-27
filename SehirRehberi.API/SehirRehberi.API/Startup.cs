@@ -81,9 +81,10 @@ namespace SehirRehberi.API
             services.AddCors();
 
             services.AddScoped<IAppRepository, AppRepository>();
-            services.AddScoped<IAuthRepository, AuthRepository>();
+			services.AddScoped<IAuthRepositoryAsync, AuthRepositoryAsync>();
+			services.AddScoped<IAuthRepository, AuthRepository>();
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+			services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
@@ -109,12 +110,18 @@ namespace SehirRehberi.API
 
 			#region dotnet ef migrations add initial yaparken burayı Comment bölgesi yap
 			/* https://www.youtube.com/watch?v=Kn9nH5rTHyk */
-			//using (var scope = app.ApplicationServices.CreateScope())
-			//{
-			//	var context = scope.ServiceProvider.GetService<MyAppDatabaseContext>();
-			//	context.Database.Migrate();
-			//	context.EnsureDatabaseSeeded();
-			//}
+			using (var scope = app.ApplicationServices.CreateScope())
+			{
+				//var context = scope.ServiceProvider.GetService<MyAppDatabaseContext>();
+				//context.Database.Migrate();
+				//context.EnsureDatabaseSeeded();
+
+
+
+				//var context = scope.ServiceProvider.GetService<IAuthRepository>();
+				//context.OlusturKisiOgrenciOrnekleri();
+
+			}
 			/* https://www.youtube.com/watch?v=Kn9nH5rTHyk */
 			#endregion
 
