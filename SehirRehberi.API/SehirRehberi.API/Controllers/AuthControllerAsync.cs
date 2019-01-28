@@ -35,15 +35,14 @@ namespace SehirRehberi.API.Controllers
         }
 
 		[HttpGet("KisiRegister/create")]
-		public Task<IActionResult> KisiRegisterCreateAsync()
+		public async void KisiRegisterCreateAsync()  // Task<IActionResult>
 		{
-			var stu1 = this.KisiRegisterAsync(new KisiRegisterDto() { Email = "stu1", KisiTipi = "STU", Password = "stu1", UserName = "stu1" });
-			var stu2 = this.KisiRegisterAsync(new KisiRegisterDto() { Email = "stu2", KisiTipi = "STU", Password = "stu2", UserName = "stu2" });
-			var stu3 = this.KisiRegisterAsync(new KisiRegisterDto() { Email = "stu3", KisiTipi = "STU", Password = "stu3", UserName = "stu3" });
-			var stu4 = this.KisiRegisterAsync(new KisiRegisterDto() { Email = "stu4", KisiTipi = "STU", Password = "stu4", UserName = "stu4" });
-			var stu5 = this.KisiRegisterAsync(new KisiRegisterDto() { Email = "stu5", KisiTipi = "STU", Password = "stu5", UserName = "stu5" });
-			var stu6 = this.KisiRegisterAsync(new KisiRegisterDto() { Email = "stu6", KisiTipi = "STU", Password = "stu6", UserName = "stu6" });
-			return stu6;
+			await this.KisiRegisterAsync(new KisiRegisterDto() { Email = "stu1", KisiTipi = "STU", Password = "stu1", UserName = "stu1" });
+			await this.KisiRegisterAsync(new KisiRegisterDto() { Email = "stu2", KisiTipi = "STU", Password = "stu2", UserName = "stu2" });
+			await this.KisiRegisterAsync(new KisiRegisterDto() { Email = "stu3", KisiTipi = "STU", Password = "stu3", UserName = "stu3" });
+			await this.KisiRegisterAsync(new KisiRegisterDto() { Email = "stu4", KisiTipi = "STU", Password = "stu4", UserName = "stu4" });
+			await this.KisiRegisterAsync(new KisiRegisterDto() { Email = "stu5", KisiTipi = "STU", Password = "stu5", UserName = "stu5" });
+			await this.KisiRegisterAsync(new KisiRegisterDto() { Email = "stu6", KisiTipi = "STU", Password = "stu6", UserName = "stu6" });
 		}
 
 		[HttpPost("KisiRegister")]

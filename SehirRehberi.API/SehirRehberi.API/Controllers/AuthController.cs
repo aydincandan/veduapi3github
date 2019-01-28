@@ -35,19 +35,18 @@ namespace SehirRehberi.API.Controllers
         }
 
 		[HttpGet("KisiRegister/create")]
-		public IActionResult KisiRegisterCreate()
+		public void KisiRegisterCreate() // IActionResult
 		{
-			var stu1 = this.KisiRegister(new KisiRegisterDto() { Email = "tea1", KisiTipi = "TEA", Password = "tea1", UserName = "tea1" });
-			var stu2 = this.KisiRegister(new KisiRegisterDto() { Email = "tea2", KisiTipi = "TEA", Password = "tea2", UserName = "tea2" });
-			var stu3 = this.KisiRegister(new KisiRegisterDto() { Email = "tea3", KisiTipi = "TEA", Password = "tea3", UserName = "tea3" });
-			var stu4 = this.KisiRegister(new KisiRegisterDto() { Email = "tea4", KisiTipi = "TEA", Password = "tea4", UserName = "tea4" });
-			var stu5 = this.KisiRegister(new KisiRegisterDto() { Email = "tea5", KisiTipi = "TEA", Password = "tea5", UserName = "tea5" });
-			var stu6 = this.KisiRegister(new KisiRegisterDto() { Email = "tea6", KisiTipi = "TEA", Password = "tea6", UserName = "tea6" });
-			return stu6;
+			this.KisiRegister(new KisiRegisterDto() { Email = "tea4", KisiTipi = "TEA", Password = "tea4", UserName = "tea4" });
+			this.KisiRegister(new KisiRegisterDto() { Email = "tea6", KisiTipi = "TEA", Password = "tea6", UserName = "tea6" });
+			this.KisiRegister(new KisiRegisterDto() { Email = "tea3", KisiTipi = "TEA", Password = "tea3", UserName = "tea3" });
+			this.KisiRegister(new KisiRegisterDto() { Email = "tea5", KisiTipi = "TEA", Password = "tea5", UserName = "tea5" });
+			this.KisiRegister(new KisiRegisterDto() { Email = "tea2", KisiTipi = "TEA", Password = "tea2", UserName = "tea2" });
+			this.KisiRegister(new KisiRegisterDto() { Email = "tea1", KisiTipi = "TEA", Password = "tea1", UserName = "tea1" });
 		}
 
 		[HttpPost("KisiRegister")]
-        public IActionResult KisiRegister([FromBody] KisiRegisterDto userForRegisterDto)
+        public ActionResult KisiRegister([FromBody] KisiRegisterDto userForRegisterDto)
         {
             if ( _authRepository.IsKisiUsernameExists(userForRegisterDto.UserName))
             {
