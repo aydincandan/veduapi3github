@@ -83,10 +83,15 @@ namespace SehirRehberi.API.Data
                 .Include(c => c.Kisiler.Adresleri)
                 .FirstOrDefault(c => c.AdminIdE == Id); }
 
-        public List<Dersler> GetDersler() { return _context.Dersler
-                .Include(c => c.DersDetaylar)
-                .ToList(); }
-        public Dersler GetDerslerById(int Id) { return _context.Dersler
+		public List<Dersler> GetDerslerWithDetaylar()
+		{
+			return _context.Dersler.Include(c => c.DersDetaylar).ToList();
+		}
+		public List<Dersler> GetDersler()
+		{
+			return _context.Dersler.ToList();
+		}
+		public Dersler GetDerslerById(int Id) { return _context.Dersler
                 .Include(c => c.DersDetaylar)
                 .FirstOrDefault(c => c.IdE == Id); }
 
@@ -95,6 +100,7 @@ namespace SehirRehberi.API.Data
 
         public List<Icerikler> GetIcerikler() { return _context.Icerikler.OrderBy(c => c.Sirano).ToList(); }
         public Icerikler GetIceriklerById(int Id) { return _context.Icerikler.FirstOrDefault(c => c.IdE == Id); }
+
 		#endregion
 
 	}

@@ -27,22 +27,75 @@ namespace SehirRehberi.API.Controllers
         private IConfiguration _configuration;
         private IMapper _mapper;
 
-        public AuthController(IAuthRepository authRepository, IConfiguration configuration, IMapper mapper)
+		private IAppRepository _appRepository;
+
+		public AuthController(IAuthRepository authRepository, IConfiguration configuration, IMapper mapper, IAppRepository appRepository)
         {
             _authRepository = authRepository;
             _configuration = configuration;
             _mapper = mapper;
-        }
 
-		[HttpGet("KisiRegister/create")]
-		public void KisiRegisterCreate() // IActionResult
+			_appRepository = appRepository;
+		}
+
+		[HttpGet("KisilerReset")]
+		public List<Kisiler> KisilerReset()
 		{
-			this.KisiRegister(new KisiRegisterDto() { Email = "tea4", KisiTipi = "TEA", Password = "tea4", UserName = "tea4" });
-			this.KisiRegister(new KisiRegisterDto() { Email = "tea6", KisiTipi = "TEA", Password = "tea6", UserName = "tea6" });
-			this.KisiRegister(new KisiRegisterDto() { Email = "tea3", KisiTipi = "TEA", Password = "tea3", UserName = "tea3" });
-			this.KisiRegister(new KisiRegisterDto() { Email = "tea5", KisiTipi = "TEA", Password = "tea5", UserName = "tea5" });
-			this.KisiRegister(new KisiRegisterDto() { Email = "tea2", KisiTipi = "TEA", Password = "tea2", UserName = "tea2" });
-			this.KisiRegister(new KisiRegisterDto() { Email = "tea1", KisiTipi = "TEA", Password = "tea1", UserName = "tea1" });
+			this.DeleteAll();
+
+			List<Kisiler> donus = new List<Kisiler>();
+
+			donus.Add(this.KISIYARAT(new KisiRegisterDto { Email = "admin@xmail.com", KisiTipi = "ADM", UserName = "admin", Password = "admin" }, true).Item2);
+
+			donus.Add(this.KISIYARAT(new KisiRegisterDto { Email = "ogrenci1@xmail.com", KisiTipi = "STU", UserName = "ogrenci1", Password = "ogrenci1" }, true).Item2);
+			donus.Add(this.KISIYARAT(new KisiRegisterDto { Email = "ogrenci2@xmail.com", KisiTipi = "STU", UserName = "ogrenci2", Password = "ogrenci2" }, true).Item2);
+			donus.Add(this.KISIYARAT(new KisiRegisterDto { Email = "ogrenci3@xmail.com", KisiTipi = "STU", UserName = "ogrenci3", Password = "ogrenci3" }, true).Item2);
+			donus.Add(this.KISIYARAT(new KisiRegisterDto { Email = "ogrenci4@xmail.com", KisiTipi = "STU", UserName = "ogrenci4", Password = "ogrenci4" }, true).Item2);
+			donus.Add(this.KISIYARAT(new KisiRegisterDto { Email = "ogrenci5@xmail.com", KisiTipi = "STU", UserName = "ogrenci5", Password = "ogrenci5" }, true).Item2);
+
+			donus.Add(this.KISIYARAT(new KisiRegisterDto { Email = "ogretmen1@xmail.com", KisiTipi = "TEA", UserName = "ogretmen1", Password = "ogretmen1" }, true).Item2);
+			donus.Add(this.KISIYARAT(new KisiRegisterDto { Email = "ogretmen2@xmail.com", KisiTipi = "TEA", UserName = "ogretmen2", Password = "ogretmen2" }, true).Item2);
+
+
+
+			//var datas = _appRepository.GetDersler();
+			//foreach (var data in datas)
+			//	_appRepository.Delete(data);
+
+			//var res = _appRepository.SaveAll();
+			//if (res.OK)
+			{
+				_appRepository.Add(new Dersler { Title = "Türkçe 1" });
+				_appRepository.Add(new Dersler { Title = "Matematik 2" });
+				_appRepository.Add(new Dersler { Title = "Fizik 2" });
+				_appRepository.Add(new Dersler { Title = "Edebiyat 4" });
+				_appRepository.Add(new Dersler { Title = "Sosyal Bilimler 1" });
+				_appRepository.Add(new Dersler { Title = "Bilgisayar 5" });
+				_appRepository.Add(new Dersler { Title = "Tarih 1" });
+				_appRepository.SaveAll();
+			}
+
+			return donus;
+		}
+
+		private Tuple<int, Kisiler> KISIYARAT(KisiRegisterDto userForRegisterDto, bool EMconfirm)
+		{
+			var userToCreate = new Kisiler
+			{
+				KisiTipi = userForRegisterDto.KisiTipi,
+				Email = userForRegisterDto.Email,
+				Username = userForRegisterDto.UserName
+			};
+			var createdUser = _authRepository.KisiRegister(userToCreate, userForRegisterDto.Password);
+			createdUser.RegisterDate = DateTime.Now;
+			createdUser.RegisterDateIP = "1.1.1.1";
+			createdUser.Username = _ControllersHelper.GetUsernameFromEmail(userToCreate.Email);
+			int sonuc = _authRepository.UpdateToKisi(createdUser);
+
+			if (sonuc > 0 && EMconfirm)
+				this.EmailConfirm(createdUser);
+
+			return new Tuple<int, Kisiler>(sonuc, createdUser);
 		}
 
 		[HttpPost("KisiRegister")]
@@ -66,20 +119,9 @@ namespace SehirRehberi.API.Controllers
 				});// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 			}
 
-			var userToCreate = new Kisiler
-            {
-                KisiTipi = userForRegisterDto.KisiTipi,
-                Email = userForRegisterDto.Email,
-                Username = userForRegisterDto.UserName
-            };
-
-			var createdUser = _authRepository.KisiRegister(userToCreate, userForRegisterDto.Password);
-
-				createdUser.RegisterDate = DateTime.Now;
-				createdUser.RegisterDateIP = "1.1.1.1";
-				createdUser.Username = _ControllersHelper.GetUsernameFromEmail(userToCreate.Email) + createdUser.IdE;
-
-			int sonuc =  _authRepository.UpdateToKisi(createdUser);
+			Tuple<int, Kisiler> kisiyarat = KISIYARAT(userForRegisterDto, false);
+			int sonuc = kisiyarat.Item1;
+			var createdUser = kisiyarat.Item2;
 
 			if (sonuc > 0)
 			{
